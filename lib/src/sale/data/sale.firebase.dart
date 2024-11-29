@@ -6,7 +6,9 @@ final saleDB = FirebaseFirestore.instance.collection('sale');
 
 class SaleFirebaseDataProvider{
   Future<SaleModel> createSale(SaleModel sale) async {
-    await saleDB.doc(sale.id).set(sale.toJson()).then((_) {});
+    await saleDB.doc(sale.id).set(sale.toJson()).then((_) {
+      SessionTemporal.updateSaleData(sale);
+    });
     return sale;
   }
 
