@@ -3,8 +3,13 @@ import '../domain/sale.repository.dart';
 
 class SaleProvider {
   final SaleRepository _repository = SaleRepository();
-  void createSale(String name) {
+  Future<void> createSale(String name) async {
     SessionTemporal.updateType(SessionType.ScrumMaster);
-    _repository.createSale(name);
+    await _repository.createSale(name);
+  }
+
+  Future<void> joinSale(String code) async {
+    await SessionTemporal.updateType(SessionType.Developer);
+    await _repository.joinSale(code);
   }
 }

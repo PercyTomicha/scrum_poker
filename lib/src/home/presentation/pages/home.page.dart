@@ -13,6 +13,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<FormState> _formCreateSale = GlobalKey();
   final TextEditingController _nameSaleController = TextEditingController();
+  final GlobalKey<FormState> _formJoinSale = GlobalKey();
+  final TextEditingController _codeSaleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +58,9 @@ class _HomePageState extends State<HomePage> {
                         if(value.length > 16) return 'El nombre de la sala no debe tener más de 16 caracteres';
                         return null;
                       },
-                      onPressed: () {
+                      onPressed: () async {
                         if(_formCreateSale.currentState!.validate()) {
-                          SaleProvider().createSale(_nameSaleController.text);
+                          await SaleProvider().createSale(_nameSaleController.text);
                           Navigator.pop(context);
                           Navigator.pushNamed(context, '/list-items');
                         }
@@ -72,7 +74,33 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 16.0),
             CustomButton(
               text: 'Unirme a una sala',
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) {
+                    return CustomBodyBottomSheet(
+                      title: 'Unirme a la sala',
+                      label: 'Código de la Sala',
+                      formKey: _formJoinSale,
+                      controller: _codeSaleController,
+                      validator: (value) {
+                        if(value == null || value.isEmpty) return 'El código de la sala no puede estar vacío.';
+                        if(value.length != 20) return 'El código de la sala es inválido';
+                        return null;
+                      },
+                      onPressed: () async {
+                        if(_formJoinSale.currentState!.validate()) {
+                          await SaleProvider().joinSale(_codeSaleController.text);
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/estimate');
+                        }
+                      },
+                      buttonText: 'Unirme',
+                    );
+                  },
+                );
+              },
             ),
             const SizedBox(height: 32.0),
           ],

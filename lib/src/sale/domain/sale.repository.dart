@@ -12,4 +12,8 @@ class SaleRepository {
         id: id, name: name, code: code, status: 0, idSelectedItem: '');
     await saleDataProvider.createSale(sale);
   }
+  
+  joinSale(String code) async {
+    await saleDataProvider.joinSale(code);
+  }
 }
