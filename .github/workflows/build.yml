@@ -1,0 +1,40 @@
+name: Build APK with Firebase
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Chequea el código
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Configura Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '<flutter_version>' # Cambia esto a tu versión de Flutter
+
+      # 3. Restaura google-services.json
+      - name: Restore google-services.json
+        run: echo "${{ secrets.FIREBASE_ANDROID_CONFIG }}" > android/app/google-services.json
+
+      # 4. Restaura firebase_options.dart
+      - name: Restore firebase_options.dart
+        run: echo "${{ secrets.FIREBASE_OPTIONS_CONFIG }}" > lib/firebase_options.dart
+
+      # 5. Restaura firebase.json
+      - name: Restore firebase.json
+        run: echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > firebase.json
+
+      # 6. Instala dependencias y construye el APK
+      - name: Build APK
+        run: |
+          flutter pub get
+          flutter build apk --release
