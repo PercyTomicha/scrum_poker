@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import 'src/home/presentation/pages/home.page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'app.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const HomePage());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const ScrumPokerApp());
 }

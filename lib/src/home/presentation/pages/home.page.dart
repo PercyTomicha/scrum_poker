@@ -1,57 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:scrum_poker/shared/widget/custom_button.widget.dart';
+import '../../../sale/presentation/sale.provider.dart';
+import '../../../../shared/widget/custom_button.widget.dart';
+import '../../../../shared/widget/custom_body_bottom_sheet.widget.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final GlobalKey<FormState> _formCreateSale = GlobalKey();
+  final TextEditingController _nameSaleController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          brightness: Brightness.light,
-          background: Colors.white,
-        ),
-      ),
-      home: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const SizedBox(
-                height: 250,
-                width: 200,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Text(
-                      'LOGO',
-                      style: TextStyle(
-                        fontSize: 60,
-                      ),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const SizedBox(
+              height: 250,
+              width: 200,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Text(
+                    'LOGO',
+                    style: TextStyle(
+                      fontSize: 60,
                     ),
-                    Placeholder(),
-                  ],
-                ),
+                  ),
+                  Placeholder(),
+                ],
               ),
-              const SizedBox(height: 60.0),
-              CustomButton(
-                text: 'Crear sala',
-                onPressed: () {},
-              ),
-              const SizedBox(height: 16.0),
-              CustomButton(
-                text: 'Unirme a una sala',
-                onPressed: () {},
-              ),
-              const SizedBox(height: 32.0),
-            ],
-          ),
-        )
-      ),
+            ),
+            const SizedBox(height: 60.0),
+            CustomButton(
+              text: 'Crear sala',
+              onPressed: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) {
+                    return CustomBodyBottomSheet(
+                      title: 'Crear Sala',
+                      label: 'Nombre de la Sala',
+                      formKey: _formCreateSale,
+                      controller: _nameSaleController,
+                      validator: (value) {
+                        if(value == null || value.isEmpty) return 'El nombre de la sala no puede estar vacío.';
+                        if(value.length > 16) return 'El nombre de la sala no debe tener más de 16 caracteres';
+                        return null;
+                      },
+                      onPressed: () {
+                        if(_formCreateSale.currentState!.validate()) {
+                          SaleProvider().createSale(_nameSaleController.text);
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/list-items');
+                        }
+                      },
+                      buttonText: 'Crear',
+                    );
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: 16.0),
+            CustomButton(
+              text: 'Unirme a una sala',
+              onPressed: () {},
+            ),
+            const SizedBox(height: 32.0),
+          ],
+        ),
+      )
     );
   }
 }
