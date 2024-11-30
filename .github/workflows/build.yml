@@ -29,9 +29,6 @@ jobs:
       - name: Restore firebase_options.dart
         run: echo "${{ secrets.FIREBASE_OPTIONS_CONFIG }}" > lib/firebase_options.dart
 
-      - name: Check firebase_options.dart
-        run: cat lib/firebase_options.dart
-
       # 5. Restaura firebase.json
       - name: Restore firebase.json
         run: echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > firebase.json
@@ -41,11 +38,4 @@ jobs:
         run: |
           flutter clean
           flutter pub get
-          flutter build apk --multidex --release
-
-      # 7. Guarda el APK como artefacto
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          flutter build apk --release
