@@ -29,6 +29,9 @@ jobs:
       - name: Restore firebase_options.dart
         run: echo "${{ secrets.FIREBASE_OPTIONS_CONFIG }}" > lib/firebase_options.dart
 
+      - name: Check firebase_options.dart
+        run: cat lib/firebase_options.dart
+
       # 5. Restaura firebase.json
       - name: Restore firebase.json
         run: echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > firebase.json
