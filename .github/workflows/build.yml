@@ -21,21 +21,31 @@ jobs:
         with:
           flutter-version: '3.16.9'
 
-      # 3. Restaura google-services.json
-      - name: Restore google-services.json
-        run: echo "${{ secrets.FIREBASE_ANDROID_CONFIG }}" > android/app/google-services.json
+      # 3. Decodifica y restaura google-services.json (Firebase para Android)
+      - name: Decode google-services.json
+        run: echo "${{ secrets.FIREBASE_ANDROID_CONFIG_ENCODED }}" | base64 -d > android/app/google-services.json
 
-      # 4. Restaura firebase_options.dart
+      # 4. Restaura firebase_options.dart (Firebase para Flutter)
       - name: Restore firebase_options.dart
         run: echo "${{ secrets.FIREBASE_OPTIONS_CONFIG }}" > lib/firebase_options.dart
 
-      # 5. Restaura firebase.json
+      # 5. Restaura firebase.json (Configuración Firebase)
       - name: Restore firebase.json
         run: echo "${{ secrets.FIREBASE_JSON_CONFIG }}" > firebase.json
 
-      # 6. Instala dependencias y construye el APK
-      - name: Build APK
+      # 6. Limpia el entorno
+      - name: Clean Flutter build
+        run: flutter clean
+
+      # 7. Instala dependencias y construye el APK
+      - name: Install dependencies and build APK
         run: |
-          flutter clean
           flutter pub get
           flutter build apk --release
+
+      # 8. Guarda el APK como artefacto
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
