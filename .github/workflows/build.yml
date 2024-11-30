@@ -36,8 +36,9 @@ jobs:
       # 6. Instala dependencias y construye el APK
       - name: Build APK
         run: |
+          flutter clean
           flutter pub get
-          flutter build apk --release
+          flutter build apk --multidex --release
 
       # 7. Guarda el APK como artefacto
       - name: Upload APK
